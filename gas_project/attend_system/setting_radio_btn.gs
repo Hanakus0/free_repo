@@ -1,8 +1,10 @@
 /*********************************************************
  * 参考資料：https://qiita.com/kobaboy/items/610263087d9c85d8458e
+ ・出席者の名前をシートから取得しラジオボタンの選択肢として設定する
  *********************************************************/
-const SPREAD_SHEET_URI = '163nq_w6AMQ57-LOT-w00Q5iWmFk1-rZeYi0RbnXgwGY'; // スプレッドシート識別子
-const TARGET_COLUMN_NAME = '参加者名'; // 対象カラム
+// enum.gs にて定義
+// const SPREAD_SHEET_URI = '163nq_w6AMQ57-LOT-w00Q5iWmFk1-rZeYi0RbnXgwGY'; // スプレッドシート識別子
+// const TARGET_COLUMN_NAME = '参加者名'; // 対象カラム
 
 /*=================================================================
 ・スプレッドシートを変数として格納後に処理を開始

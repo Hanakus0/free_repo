@@ -6,10 +6,11 @@
  * 使用後のトリガーは溜まらないように削除処理を施している
  * 受付状態の切り替えをすることで出席情報を毎日別レコードとして扱えるようにしている
  ******************************************************************/
-// パラメータ
-const TARGET_FORM = FormApp.getActiveForm();
-const OPEN_TRIGGER = 'formOpenFunc';
-const CLOSE_TRIGGER = 'formCloseFunc';
+// enum.gs にて定義
+// const SPREAD_SHEET_URI = '163nq_w6AMQ57-LOT-w00Q5iWmFk1-rZeYi0RbnXgwGY'; // スプレッドシート識別子
+// const TARGET_FORM = FormApp.getActiveForm();
+// const OPEN_TRIGGER = 'formOpenFunc';
+// const CLOSE_TRIGGER = 'formCloseFunc';
 
 /*=================================================================
 ・トリガーを定期的に設定および削除するプロセス
@@ -21,8 +22,8 @@ function closeTrigger() {
   let triggers = ScriptApp.getScriptTriggers();
   for(let trigger of triggers){
     let funcName = trigger.getHandlerFunction();
-    //function名を定期実行したい関数名に変更する
-    if(funcName == CLOSE_TRIGGER){
+    //対象のトリガーを削除
+    if(funcName == CLOSE_TRIGGER || funcName == SEND_MAIL_TRIGGER){                                     
       ScriptApp.deleteTrigger(trigger);
     }
   }
@@ -31,10 +32,15 @@ function closeTrigger() {
   let y = now.getFullYear();
   let m = now.getMonth();
   let d = now.getDate();
-  // トリガーの時間指定
-  let date = new Date(y, m, d, 20, 49); // 処理時間を加味して20：49とする
-  //function名を定期実行したい関数名に変更する
-  ScriptApp.newTrigger(CLOSE_TRIGGER).timeBased().at(date).create();
+  // トリガーの時間指定1
+  let form_open_date = new Date(y, m, d, 20, 49); // 処理時間を加味して20：49とする
+  // フォームをcloseするトリガーを設定
+  ScriptApp.newTrigger(CLOSE_TRIGGER).timeBased().at(form_open_date).create();
+
+  // トリガーの時間指定2
+  let send_email_date = new Date(y, m, d, 20, 00); // 処理時間を加味して20：00とする
+  // リマインドメールを送信するトリガーを設定
+  ScriptApp.newTrigger(SEND_MAIL_TRIGGER).timeBased().at(send_email_date).create();
 }
 
 // 【トリガー設定： formOpenFunc】
@@ -44,8 +50,8 @@ function openTrigger() {
   let triggers = ScriptApp.getScriptTriggers();
   for(let trigger of triggers){
     let funcName = trigger.getHandlerFunction();
-    //function名を定期実行したい関数名に変更する
-    if(funcName == OPEN_TRIGGER){
+    //対象のトリガーを削除
+    if(funcName == OPEN_TRIGGER){                                     
       ScriptApp.deleteTrigger(trigger);
     }
   }
@@ -56,8 +62,8 @@ function openTrigger() {
   let d = now.getDate();
   // トリガーの時間指定
   let date = new Date(y, m, d+1, 00, 00);
-  //function名を定期実行したい関数名に変更する
-  ScriptApp.newTrigger(OPEN_TRIGGER).timeBased().at(date).create();
+  // フォームをopenするトリガーを設定
+  ScriptApp.newTrigger(OPEN_TRIGGER).timeBased().at(date).create();  
 }
 
 
@@ -74,6 +80,8 @@ function formCloseFunc() {
 =================================================================*/
 function formOpenFunc() {
   TARGET_FORM.setAcceptingResponses(true);
+  // セレクトボックスの選択肢決定
+  setNameToRadioBtn();
   closeTrigger(); // 上記内容が処理し終える度にトリガーをセットする
 }
 
