@@ -6,11 +6,6 @@
  * 使用後のトリガーは溜まらないように削除処理を施している
  * 受付状態の切り替えをすることで出席情報を毎日別レコードとして扱えるようにしている
  ******************************************************************/
-// enum.gs にて定義
-// const SPREAD_SHEET_URI = '163nq_w6AMQ57-LOT-w00Q5iWmFk1-rZeYi0RbnXgwGY'; // スプレッドシート識別子
-// const TARGET_FORM = FormApp.getActiveForm();
-// const OPEN_TRIGGER = 'formOpenFunc';
-// const CLOSE_TRIGGER = 'formCloseFunc';
 
 /*=================================================================
 ・トリガーを定期的に設定および削除するプロセス

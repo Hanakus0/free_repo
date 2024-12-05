@@ -3,9 +3,6 @@
 ・本日の出席者のメールアドレスだけを取得
 ・宛先のメールアドレスに送信
 =================================================================*/
-// enum.gs にて定義
-// const SPREAD_SHEET_URI = '163nq_w6AMQ57-LOT-w00Q5iWmFk1-rZeYi0RbnXgwGY'; // スプレッドシート識別子
-// const TARGET_COLUMN_EMAIL = 'メールアドレス'; // 対象カラム
 
 function process_send_email() {
   // URLより対象のスプレッドシートのシートをすべて取得
@@ -21,8 +18,10 @@ function process_send_email() {
   today_date = today.getDate();
   // リストの宛先、本日送信する宛先の2つを取得
   [all_address_ary, today_attend_address_ary] = check_today_record(all_records, today_year, today_month, today_date);
+  // 本日の宛先メールから特定の宛先を削除
+  send_address_ary = except_send_email(all_address_ary);
   // 本日の宛先メールのだけに送信
-  send_remainder(all_address_ary, today_attend_address_ary, today_year, today_month, today_date);
+  send_remainder(send_address_ary, today_attend_address_ary, today_year, today_month, today_date);
 }
 
 /*=================================================================
@@ -60,6 +59,16 @@ function check_today_record(all_records, year, month, date) {
   return [all_address_ary, today_attend_address_ary];
 }
 
+/*=================================================================
+・特定の宛先だけは除く
+=================================================================*/
+function except_send_email(all_address_ary) {
+  let except_result = all_address_ary.filter(e => !EXCEPT_EMAIL_ARY.includes(e));
+  
+  console.log(except_result);
+  return except_result;
+}
+
 
 /*=================================================================
 ・本日の出席者のメールアドレスだけを取得
@@ -78,14 +87,14 @@ ${ today_year }/${ today_month }/${ today_date } のRUNTEQ - 夜アウトプッ�
 
 
 まだ出席回答をされていない方は取り急ぎよろしくお願いいたします。
-欠席される方はフォームの回答は不要です。
+（※欠席される方はフォームの回答は不要です）
+
+
+
 
 もし出席申請を済みで都合が悪くなり欠席に変更したい場合は、回答時に届いた回答確認メールより回答の編集を行ってください。
+
 `;
   // メール送信
   GmailApp.sendEmail(send_address_ary, mail_subject, mail_body, { from: FROM_EMAIL_ADDRESS });
 }
-
-
-
-
